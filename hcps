@@ -1,0 +1,49 @@
+#! /bin/python3
+from __future__ import print_function
+
+import sys, os, re
+from random import *
+
+def	shuffle(): return sample(range(52),52)
+
+def	hcps(hand):
+	pts = 0
+	for card in hand:
+		pts += 0 if card < 36 else (card - 32) // 4
+	return	pts
+
+def	main():
+	histo = [ 0 for x in range(40) ]
+	argc = len(sys.argv)
+	reps = 100 if argc <= 1 else int(sys.argv[1])
+	cent = 25.0/reps	# 100 divided by 4 Hands per Deal
+	print('args: %r, deals: %d' %
+		(sys.argv, reps))
+
+	while	reps:
+		reps -= 1
+		deal = shuffle()
+		nort = deal[00:13]
+		east = deal[13:26]
+		suds = deal[26:39]
+		west = deal[39:52]
+
+		histo[hcps(nort)] += 1
+		histo[hcps(east)] += 1
+		histo[hcps(suds)] += 1
+		histo[hcps(west)] += 1
+
+	print('Points Percent Subtot Reverse')
+	if 0:	print('x', '\tx' * 4)
+	pts = 0
+	cum = 0.0
+	for cnt in histo:
+		pct = cnt * cent
+		pcx = pct if pct > .01 else 0.0 - cnt
+		if cnt:	print('%3d %7.2f %7.2f%% %7.2f%%\t%s' %
+				(pts, pcx, cum, 100.0 - cum,
+				'*' * int(pct * 4)))
+		cum += pct
+		pts += 1
+
+if __name__ == '__main__':	main()

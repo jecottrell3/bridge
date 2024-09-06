@@ -1,0 +1,27 @@
+#! /bin/python3
+from __future__ import print_function
+
+import sys, os, re
+from random import *
+
+def shuffle(): return sample(range(52),52)
+
+suit = 'cdhs'
+rank = '23456789TJQKA'
+
+def c2v(card): return	((card&3) << 4) + (card>>2)
+
+def v2s(valu): return	'%c%c' % (rank[valu & 15], suit[valu >> 4])
+
+def show(deal):
+	valu = [c2v(x) for x in deal]
+	nort = sorted(valu[00:13], reverse=True)
+	east = sorted(valu[13:26], reverse=True)
+	suds = sorted(valu[26:39], reverse=True)
+	west = sorted(valu[39:52], reverse=True)
+	print([v2s(x) for x in nort])
+	print([v2s(x) for x in east])
+	print([v2s(x) for x in suds])
+	print([v2s(x) for x in west])
+
+show(shuffle())
