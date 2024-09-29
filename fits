@@ -8,6 +8,7 @@ def shuffle(): return sample(range(52),52)
 
 suit = 'cdhs'
 rank = '23456789TJQKA'
+rev = 1
 
 def c2v(card): return	((card&3) << 4) + (card>>2)
 
@@ -28,26 +29,26 @@ def main():
 	rev  = 1    if argc <= 3 else int(sys.argv[3])
 	cent = 50.0/reps	# 100 divided by 2 Sides per Deal
 	print('args: %r, Deals: %d, Field: %s, Sort: %s' %
-		(sys.argv, reps, ('Dist','Count')[fld], ('Up', 'Down') [rev]))
+		(sys.argv, reps, ('Dist','Count')[fld], ('Up', 'Down')[rev]))
 	while	reps:
 		reps -= 1
 		deal = shuffle()
-		nort = deal[00:26]
+		nort = deal[00:26]	# N+E cards
 		east = deal[13:26]
-		suds = deal[26:52]
-		west = deal[39:52]
+		suds = deal[26:39]
+		west = deal[26:52]	# W+S cards
 
 		key = dist(nort); histo[key] = histo.get(key,0) + 1
 		#ey = dist(east); histo[key] = histo.get(key,0) + 1
-		key = dist(suds); histo[key] = histo.get(key,0) + 1
-		#ey = dist(west); histo[key] = histo.get(key,0) + 1
+		#ey = dist(suds); histo[key] = histo.get(key,0) + 1
+		key = dist(west); histo[key] = histo.get(key,0) + 1
 
-	print('Rank (Dist, Count)\tPercent\tTotals\tReverse')
+	print('Rank (Dist, Count)\tSubtot\tPercent\tReverse')
 	cum = 0.0; seq = 1
 	for	item in sorted(histo.items(), key=lambda x: int(x[fld]), reverse=rev):
 		pct = item[1] * cent
 		print('%3d ' % seq, item, 
-			'\t%6.3f\t%6.3f\t%6.3f' % (pct, cum, 100.0 - cum))
+			'\t%6.3f\t%6.3f\t%6.3f' % (cum, pct, 100.0 - cum))
 		cum += pct; seq += 1
 
 if __name__ == '__main__': main()

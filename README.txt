@@ -1,17 +1,18 @@
+https://github.com/jecottrell3/bridge
+
 * Miscellaneous Bridge Utilities
 
 Here you will find Three Programs to Compute the Distribution
 of High Card Points and Suit Distribution. They are written in
 Python3 under Linux but ought to work on any Python interpreter.
 
-** hand
-	Deals a Bridge Hand. Very Rudimentary. Ignore, or rather,
-	consider this a Test Program.
+** hand deals
+	Deals Bridge Hands. Default is One.
 
 ** hcps deals
 	Print a High Card Distribution Graph. Takes one argument, the
-	Number of Hands to Deal. Default is 1000. which is Way Too Low,
-	but Instantaneous. Try adding a Zero to get Better Approximations.
+	Number of Hands to Deal. Default is 1000, which is Too Low,
+	but Quick. Try adding a Zero or Two to get Better Approximations.
 	Note that a Deal actually includes Four Hands.
 
 ** dist deals what how
@@ -21,12 +22,12 @@ Python3 under Linux but ought to work on any Python interpreter.
 	Frequency of that Distribution. The third argument determines whether
 	to Sort UP or DOWN.
 
-	The distribution Names themselves are Sorted;
-	a 6310 hand becomes a 0136 one. So this mode can be used to Determine
+	The distribution Names themselves are Sorted; when reversed,
+	a 6310 hand becomes a 0136 one. This mode can be used to Determine
 	the Frequency of Voids, Singletons as well as Long Suits.
 
 	The arguments WHAT and HOW are Encoded as wither Zero or One. They both
-	default to 1 if omitted.
+	default to 1 if omitted. I need a Better Way to Encode this.
 
 	I started to Explain the Differences, but it's Easier to just
 	Run the Four Commands ...
@@ -46,7 +47,7 @@ Python3 under Linux but ought to work on any Python interpreter.
 
 * NOTES:
 
-The outputs have a Cumulative as well as Reverse running Total Columns,
+The outputs have a Cumulative as well as Reverse running SubTotal Columns,
 so Ranges can be more Easily Computed.
 
 * Quick Facts
@@ -63,6 +64,15 @@ so Ranges can be more Easily Computed.
 	+ 55% chance of Having a Doubleton
 	+ 10% chance of Having a Flat Hand
 
-* I will be Including some DATA Files soon.
+	+ 22% chance Either Side holds a 8765 Fit
+	+ 10% chance Either Side holds a 7766 Fit
+
+	+ 15% chance of Seven Only Fit
+	+ 45% chance of Eight Card Fit
+	+ 28% chance of Nine  Card Fit
+	+  8% chance of Ten   Card Fit
+	+  2% chance of Eleven or More
+
+* See Included Data Files.
 
 * END

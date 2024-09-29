@@ -6,22 +6,24 @@ from random import *
 
 def shuffle(): return sample(range(52),52)
 
-suit = 'cdhs'
-rank = '23456789TJQKA'
-
-def c2v(card): return	((card&3) << 4) + (card>>2)
-
-def v2s(valu): return	'%c%c' % (rank[valu & 15], suit[valu >> 4])
-
 def show(deal):
-	valu = [c2v(x) for x in deal]
-	nort = sorted(valu[00:13], reverse=True)
-	east = sorted(valu[13:26], reverse=True)
-	suds = sorted(valu[26:39], reverse=True)
-	west = sorted(valu[39:52], reverse=True)
-	print([v2s(x) for x in nort])
-	print([v2s(x) for x in east])
-	print([v2s(x) for x in suds])
-	print([v2s(x) for x in west])
+	peeps = ('North', 'East', 'South', 'West')
+	zoots = ('Spades', 'Hearts', 'Diamond', 'Clubs')
+	suits = 'SHDC'
+	ranks = '23456789TJQKA'
 
-show(shuffle())
+	base = 0
+	data = [[ '' for s in suits] for r in range(4)]
+	print(('%s\t' * 5) % ('', *zoots))
+	for hand in range(4):
+		for card in sorted(deal[base:base+13], reverse=True):
+			suit = card &  3
+			rank = card // 4
+			data[hand][suit] += ranks[rank]
+		print(('%s\t' * 5) % (peeps[hand], *data[hand]))
+		base += 13
+	
+argc = len(sys.argv)
+reps = 1 if argc <= 1 else int(sys.argv[1])
+
+while reps > 0: reps -=1; show(shuffle())

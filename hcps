@@ -15,7 +15,7 @@ def	hcps(hand):
 def	main():
 	histo = [ 0 for x in range(40) ]
 	argc = len(sys.argv)
-	reps = 100 if argc <= 1 else int(sys.argv[1])
+	reps = 1000 if argc <= 1 else int(sys.argv[1])
 	cent = 25.0/reps	# 100 divided by 4 Hands per Deal
 	print('args: %r, deals: %d' %
 		(sys.argv, reps))
@@ -33,15 +33,15 @@ def	main():
 		histo[hcps(suds)] += 1
 		histo[hcps(west)] += 1
 
-	print('Points Percent Subtot Reverse')
+	print('Points Subtot  Percent Reverse')
 	if 0:	print('x', '\tx' * 4)
 	pts = 0
 	cum = 0.0
 	for cnt in histo:
 		pct = cnt * cent
-		pcx = pct if pct > .01 else 0.0 - cnt
-		if cnt:	print('%3d %7.2f %7.2f%% %7.2f%%\t%s' %
-				(pts, pcx, cum, 100.0 - cum,
+		pcx = pct if pct > .001 else 0.0 - cnt
+		if cnt:	print('%3d  %7.3f%% %7.3f%% %7.3f%%\t%s' %
+				(pts, cum, pcx, 100.0 - cum,
 				'*' * int(pct * 4)))
 		cum += pct
 		pts += 1

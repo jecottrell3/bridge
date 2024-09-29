@@ -1,4 +1,5 @@
-['As', 'Ks', 'Qs', '7s', '6s', '8h', '7h', '3h', '2h', 'Ad', '3d', 'Qc', '5c']
-['Ts', '8s', '5s', '3s', 'Qh', 'Jh', 'Kd', '9d', '8d', 'Jc', 'Tc', '4c', '2c']
-['9s', '4s', '2s', 'Th', '9h', '6h', 'Qd', 'Jd', '7d', '6d', 'Kc', '8c', '7c']
-['Js', 'Ah', 'Kh', '5h', '4h', 'Td', '5d', '4d', '2d', 'Ac', '9c', '6c', '3c']
+	Spades	Hearts	Diamond	Clubs	
+North	T74	KQJ72	Q763	T	
+East	AK952	3	K2	Q8643	
+South	J8	AT9865	T85	A7	
+West	Q63	4	AJ94	KJ952	
