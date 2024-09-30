@@ -26,6 +26,8 @@ Python3 under Linux but ought to work on any Python interpreter.
 	a 6310 hand becomes a 0136 one. This mode can be used to Determine
 	the Frequency of Voids, Singletons as well as Long Suits.
 
+	NOTE: Suit lengths are in Hex; A is 10, B is 11, C is 12, and D is 13.
+
 	The arguments WHAT and HOW are Encoded as wither Zero or One. They both
 	default to 1 if omitted. I need a Better Way to Encode this.
 

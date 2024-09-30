@@ -18,7 +18,7 @@ def dist(hand):
 	global rev
 	freq = [0,0,0,0]
 	for card in hand: freq[card & 3] += 1
-	return	'%d%d%d%d' % tuple(sorted(freq,reverse=rev))
+	return	int('%x%x%x%x' % tuple(sorted(freq,reverse=rev)), base=16)
 
 def main():
 	global rev
@@ -43,12 +43,15 @@ def main():
 		#ey = dist(suds); histo[key] = histo.get(key,0) + 1
 		key = dist(west); histo[key] = histo.get(key,0) + 1
 
-	print('Rank (Dist, Count)\tSubtot\tPercent\tReverse')
+	#rint('12345678' * 9)
+	print('Rank\tDist\t Count\tSubtot\tPercent\tReverse')
 	cum = 0.0; seq = 1
 	for	item in sorted(histo.items(), key=lambda x: int(x[fld]), reverse=rev):
 		pct = item[1] * cent
-		print('%3d ' % seq, item, 
-			'\t%6.3f\t%6.3f\t%6.3f' % (cum, pct, 100.0 - cum))
+		print('%4d' % seq, '%04X' % item[0], '%6d' % item[1], 
+			'%6.3f' % cum,
+			'%6.3f' % pct,
+			'%6.3f' % (100.0 - cum), sep='\t')
 		cum += pct; seq += 1
 
 if __name__ == '__main__': main()
