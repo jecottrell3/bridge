@@ -6,7 +6,7 @@ Here you will find Three Programs to Compute the Distribution
 of High Card Points and Suit Distribution. They are written in
 Python3 under Linux but ought to work on any Python interpreter.
 
-** hand deals
+** deal deals
 	Deals Bridge Hands. Default is One.
 
 ** hcps deals
@@ -15,45 +15,31 @@ Python3 under Linux but ought to work on any Python interpreter.
 	but Quick. Try adding a Zero or Two to get Better Approximations.
 	Note that a Deal actually includes Four Hands.
 
-** dist deals what how
-	This one is Complex. This prints Hand Distribution is Four Different
-	Ways. The first argument is the Number of Hands. The second controls
-	Which Field will be Sorted on, either the Distribution Itself, or the
-	Frequency of that Distribution. The third argument determines whether
-	to Sort UP or DOWN.
+** dist -drp deals
 
-	The distribution Names themselves are Sorted; when reversed,
-	a 6310 hand becomes a 0136 one. This mode can be used to Determine
-	the Frequency of Voids, Singletons as well as Long Suits.
+	Prints Distributions in Several Different Ways.
+	With no flags, prints Distributions sorted by Count. Use -d to sort
+	by Distribution. The -r flag Reverses, the Sort; however, the Name of
+	the Distribution is reversed as well, allowing Voids, Singletons, and
+	Doubletons to be tallied. Finally, using -p analyzes Pairs of 26 cards
+	rather than Hands of 13, allowing Partnership Fits to be Displayed.
+
+	The last argument is the Number of Deals, defaulting to 1000.
 
 	NOTE: Suit lengths are in Hex; A is 10, B is 11, C is 12, and D is 13.
-
-	The arguments WHAT and HOW are Encoded as wither Zero or One. They both
-	default to 1 if omitted. I need a Better Way to Encode this.
-
-	I started to Explain the Differences, but it's Easier to just
-	Run the Four Commands ...
-
-		./dist 1000 1 1
-		./dist 1000 0 1
-		./dist 1000 0 0
-		./dist 1000 1 0
-
-	... and See What they Do. I have included .TXT files with the outputs.
-
-** fits
-	This is the Same Program as Dist mentioned above, except both the
-	Hands on Each Side are Combined, giving the Distribution of the Fits.
-	This just Falls Out of the Program; Two sides of 26 cards each
-	rather than Four of 13. Same Arguments.
 
 * NOTES:
 
 The outputs have a Cumulative as well as Reverse running SubTotal Columns,
-so Ranges can be more Easily Computed.
+so Ranges can be more Easily Computed when the -d flag is used.
+
+A thousand hands go quickly. A Million take 
 
 * Quick Facts
 
+	+ use "dist" for a normal distribution table
+
+	+ use "dist -d" to determine...
 	+ 35% chance of 4 card longest suit
 	+ 44% chance of 5 card longest suit
 	+ 16% chance of 6 card longest suit
@@ -61,20 +47,42 @@ so Ranges can be more Easily Computed.
 	+ 1/2% chance a 8 card longest suit
 	+ 1/25% chance  9 card longest suit
 
+	+ use "dist -dr" to determine...
 	+  5% chance of Having a Void
 	+ 30% chance of Having a Singleton
 	+ 55% chance of Having a Doubleton
 	+ 10% chance of Having a Flat Hand
 
-	+ 22% chance Either Side holds a 8765 Fit
-	+ 10% chance Either Side holds a 7766 Fit
+	+ use "dist -p" to determine...
+	+ 22% chance Both Sides hold a 8765 Fit
+	+ 10% chance Both Sides hold a 7766 Fit
 
+	+ use "dist -pd" to determine...
 	+ 15% chance of Seven Only Fit
 	+ 45% chance of Eight Card Fit
 	+ 28% chance of Nine  Card Fit
 	+  8% chance of Ten   Card Fit
 	+  2% chance of Eleven or More
 
-* See Included Data Files.
+* Program Files.
+
+Three programs are included: hand, hcps, dist.
+A makefile and a README.txt are included.
+
+* Data Files.
+
+NAME		COMMAND			DESCRIPTION
+deal.txt	deal 4			A Chicago Deal
+hcps.txt	hcps	  1234567	High Card Point Graph
+
+hand-tops.txt	dist	  1234567	Hand Distribution by Freduency
+hand-sort.txt	dist -r   1234567	Hand Distribution by Scarcity
+hand-dist.txt	dist -d	  1234567	Hand Distribution by Long  Suits
+hand-revs.txt	dist -dr  1234567	Hand Distribution by Short Suits
+
+pair-tops.txt	dist -p	  1234567	Pair Distribution by Freduency
+pair-sort.txt	dist -pr  1234567	Pair Distribution by Scarcity
+pair-dist.txt	dist -pd  1234567	Pair Distribution by Long  Suits
+pair-revs.txt	dist -pdr 1234567	Pair Distribution by Short Suits
 
 * END

@@ -4,54 +4,84 @@ from __future__ import print_function
 import sys, os, re
 from random import *
 
+####################################################################
+####			Data					####
+####################################################################
+
+down = 1
+freq = 1
+pair = 0
+reps = 1000
+
+argv = sys.argv[1:]
+prog = sys.argv[0]
+
+####################################################################
+####			Functions				####
+####################################################################
+
+def usage():
+	print('''usage: %s -drp? deals=1000
+	-r	reverse/DOWN
+	-d	dist/COUNT
+	-p	pair/HAND''' % prog)
+
 def shuffle(): return sample(range(52),52)
 
-suit = 'cdhs'
-rank = '23456789TJQKA'
-rev = 1
+def dist(hand, updn):
+	hash = [0,0,0,0]
+	for card in hand: hash[card & 3] += 1
+	return	int('%x%x%x%x' % tuple(sorted(hash,reverse=updn)), base=16)
 
-def c2v(card): return	((card&3) << 4) + (card>>2)
+####################################################################
+
+####################################################################
+####			Args / Flags				####
+####################################################################
 
-def v2s(valu): return	'%c%c' % (rank[valu & 15], suit[valu >> 4])
+while argv:
+	arg = argv.pop(0)
+	if '-' != arg[0]: reps = int(arg); continue
+	down = 'r' not in arg
+	freq = 'd' not in arg
+	pair = 'p'     in arg
+	if     'h'     in arg:	usage(); exit()
 
-def dist(hand):
-	global rev
-	freq = [0,0,0,0]
-	for card in hand: freq[card & 3] += 1
-	return	int('%x%x%x%x' % tuple(sorted(freq,reverse=rev)), base=16)
+cent = (50.0 if pair else 25.0)/reps	# 100 divided by 2 Sides or 4 Hands
 
-def main():
-	global rev
-	histo = dict()
-	argc = len(sys.argv)
-	reps = 1000 if argc <= 1 else int(sys.argv[1])
-	fld  = 1    if argc <= 2 else int(sys.argv[2])
-	rev  = 1    if argc <= 3 else int(sys.argv[3])
-	cent = 25.0/reps	# 100 divided by 2 Sides per Deal
-	print('args: %r, Deals: %d, Field: %s, Sort: %s' %
-		(sys.argv, reps, ('Dist','Count')[fld], ('Up', 'Down')[rev]))
-	while	reps:
-		reps -= 1
-		deal = shuffle()
-		nort = deal[00:13]
-		east = deal[13:26]
-		suds = deal[26:39]
-		west = deal[39:52]
+print('Deals: %d, Field: %s, Sort: %s, Pair: %d' %
+	(reps, ('Dist','Count')[freq], ('Up', 'Down')[down], pair))
 
-		key = dist(nort); histo[key] = histo.get(key,0) + 1
-		key = dist(east); histo[key] = histo.get(key,0) + 1
-		key = dist(suds); histo[key] = histo.get(key,0) + 1
-		key = dist(west); histo[key] = histo.get(key,0) + 1
+####################################################################
+####			Compute Loop				####
+####################################################################
 
-	#rint('12345678' * 9)
-	print('Rank\tDist\t Count\tSubtot\tPercent\tReverse')
-	cum = 0.0; seq = 1
-	for	item in sorted(histo.items(), key=lambda x: int(x[fld]), reverse=rev):
-		pct = item[1] * cent
-		print('%4d' % seq, '%04X' % item[0], '%6d' % item[1], 
-			'%6.3f' % cum,
-			'%6.3f' % pct,
-			'%6.3f' % (100.0 - cum), sep='\t')
-		cum += pct; seq += 1
+histo = dict()
+while	reps:
+	reps -= 1
+	deal = shuffle()
 
-if __name__ == '__main__': main()
+	todo =	[ deal[ 0:26], deal[26:52] ] if pair else \
+		[ deal[ 0:13], deal[13:26], deal[26:39], deal[39:52] ]
+
+	for hand in todo:
+		key = dist(hand, down)
+		try:	histo[key] += 1
+		except: histo[key]  = 1
+
+####################################################################
+####			Print Results				####
+####################################################################
+
+print('Rank\tDist\t Count\tSubtot\tPercent\tReverse')
+cum = 0.0; seq = 1
+for	item in sorted(histo.items(), key=lambda x: x[freq], reverse=down):
+	pct = item[1] * cent
+	print('%4d' % seq, '%04X' % item[0], '%6d' % item[1], 
+		'%6.3f' % cum,
+		'%6.3f' % pct,
+		'%6.3f' % (100.0 - cum), sep='\t')
+	cum += pct; seq += 1
+
+####################################################################
+#END#

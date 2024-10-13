@@ -1,5 +1,0 @@
-	Spades	Hearts	Diamond	Clubs	
-North	JT2	65	T952	QJ96	
-East	AKQ874	KJ74	4	A7	
-South	53	Q9	QJ8763	KT5	
-West	96	AT832	AK	8432	

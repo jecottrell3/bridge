@@ -1,41 +1,33 @@
 #! /bin/make
 
-H=hand.txt hcps-1M.txt
-D=dist-1M-0-0.txt dist-1M-0-1.txt dist-1M-1-0.txt dist-1M-1-1.txt
-F=fits-1M-0-0.txt fits-1M-0-1.txt fits-1M-1-0.txt fits-1M-1-1.txt
+N=1234567
+
+H=deal.txt hcps.txt
+D=hand-tops.txt hand-dist.txt hand-revs.txt hand-sort.txt
+F=pair-tops.txt pair-dist.txt pair-revs.txt pair-sort.txt
+
 A=$H $D $F
 
 all: $A
 
-hand.txt:
-	hand > $@
+deal.txt:;	time deal	4  > $@
 
-hcps-1M.txt:
-	time hcps 1234567 > $@
+hcps.txt:;	time hcps	$N > $@
 
-dist-1M-0-0.txt:
-	time dist 1234567 0 0 > $@
-
-dist-1M-0-1.txt:
-	time dist 1234567 0 1 > $@
-
-dist-1M-1-0.txt:
-	time dist 1234567 1 0 > $@
-
-dist-1M-1-1.txt:
-	time dist 1234567 1 1 > $@
-
-fits-1M-0-0.txt:
-	time fits 1234567 0 0 > $@
-
-fits-1M-0-1.txt:
-	time fits 1234567 0 1 > $@
-
-fits-1M-1-0.txt:
-	time fits 1234567 1 0 > $@
-
-fits-1M-1-1.txt:
-	time fits 1234567 1 1 > $@
+hand-tops.txt:;	time dist	$N > $@
+hand-sort.txt:;	time dist -r	$N > $@
+hand-dist.txt:;	time dist -d	$N > $@
+hand-revs.txt:;	time dist -dr	$N > $@
+pair-tops.txt:;	time dist -p	$N > $@
+pair-sort.txt:;	time dist -pr	$N > $@
+pair-dist.txt:;	time dist -pd	$N > $@
+pair-revs.txt:;	time dist -pdr	$N > $@
 
 save::
 	mv -vi $A save
+
+move::
+	mv -vf $A save
+
+clean::
+	rm -fv [a-z]*.txt
