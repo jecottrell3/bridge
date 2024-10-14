@@ -81,7 +81,8 @@ A makefile and a README.txt are included.
 
 NAME		COMMAND			DESCRIPTION
 deal.txt	deal 4			A Chicago Deal
-hcps.txt	hcps	  1234567	High Card Point Graph
+hcps-hand.txt	hcps	  1234567	Hand High Card Point Graph
+hcps-pair.txt	hcps	  -1234567	Pair High Card Point Graph
 
 hand-tops.txt	dist	  1234567	Hand Distribution by Freduency
 hand-sort.txt	dist -r   1234567	Hand Distribution by Scarcity

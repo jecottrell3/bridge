@@ -2,17 +2,18 @@
 
 N=1234567
 
-H=deal.txt hcps.txt
-D=hand-tops.txt hand-dist.txt hand-revs.txt hand-sort.txt
-F=pair-tops.txt pair-dist.txt pair-revs.txt pair-sort.txt
+D=deal.txt hcps-hand.txt hcps-pair.txt
+H=hand-tops.txt hand-dist.txt hand-revs.txt hand-sort.txt
+P=pair-tops.txt pair-dist.txt pair-revs.txt pair-sort.txt
 
-A=$H $D $F
+T=$D $H $P
 
-all: $A
+all: $T
 
 deal.txt:;	time deal	4  > $@
 
-hcps.txt:;	time hcps	$N > $@
+hcps-hand.txt:;	time hcps  $N > $@
+hcps-pair.txt:;	time hcps -$N > $@
 
 hand-tops.txt:;	time dist	$N > $@
 hand-sort.txt:;	time dist -r	$N > $@
@@ -24,10 +25,10 @@ pair-dist.txt:;	time dist -pd	$N > $@
 pair-revs.txt:;	time dist -pdr	$N > $@
 
 save::
-	mv -vi $A save
+	mv -vi $T save
 
 move::
-	mv -vf $A save
+	mv -vf $T save
 
 clean::
-	rm -fv [a-z]*.txt
+	rm -vf [a-z]*.txt
