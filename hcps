@@ -4,34 +4,44 @@ from __future__ import print_function
 import sys, os, re
 from random import *
 
-def	shuffle(): return sample(range(52),52)
+deck = tuple(range(52))
+
+def	shuffle(): return sample(deck,52)
 
 def	hcps(hand):
 	pts = 0
 	for card in hand:
-		pts += 0 if card < 36 else (card - 32) // 4
+		pts += 0 if card > 19 else card // 4
+		### += 0 if card < 36 else (card - 32) // 4
 	return	pts
 
 def	main():
-	histo = [ 0 for x in range(40) ]
+	histo = [0] * 40
 	argc = len(sys.argv)
 	reps = 1000 if argc <= 1 else int(sys.argv[1])
+	fact =    4 if argc <= 2 else int(sys.argv[2])
 	cent = 25.0/reps	# 100 divided by 4 Hands per Deal
 	print('args: %r, deals: %d' %
 		(sys.argv, reps))
 
+	if reps < 0:		# Minus means Pairs
+		reps = -reps
+		cent *= -2	# CORRECT!
+		pair = 1
+	else:	pair = 0
+
 	while	reps:
 		reps -= 1
 		deal = shuffle()
-		nort = deal[00:13]
-		east = deal[13:26]
-		suds = deal[26:39]
-		west = deal[39:52]
 
-		histo[hcps(nort)] += 1
-		histo[hcps(east)] += 1
-		histo[hcps(suds)] += 1
-		histo[hcps(west)] += 1
+		todo =	[ deal[ 0:26] ] if pair else \
+			[ deal[ 0:13], deal[13:26], deal[26:39], deal[39:52] ]
+
+		for hand in todo:
+			pts = hcps(hand)
+			if pair and pts == 20: histo[20] += 1	# other hand
+			if pair and pts >  20: pts = 40 - pts	# small hand
+			histo[pts] += 1
 
 	print('Points Subtot  Percent Reverse')
 	if 0:	print('x', '\tx' * 4)
@@ -40,10 +50,11 @@ def	main():
 	for cnt in histo:
 		pct = cnt * cent
 		pcx = pct if pct > .001 else 0.0 - cnt
-		if cnt:	print('%3d  %7.3f%% %7.3f%% %7.3f%%\t%s' %
-				(pts, cum, pcx, 100.0 - cum,
-				'*' * int(pct * 4)))
+		if pair or cnt:	print('%3d  %7.3f%% %7.3f%% %7.3f%%\t%s' %
+					(pts, cum, pcx, 100.0 - cum,
+					'*' * int(pct * fact)))
 		cum += pct
 		pts += 1
+		if pair and pts > 20: break
 
 if __name__ == '__main__':	main()

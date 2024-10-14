@@ -7,13 +7,20 @@ of High Card Points and Suit Distribution. They are written in
 Python3 under Linux but ought to work on any Python interpreter.
 
 ** deal deals
+
 	Deals Bridge Hands. Default is One.
 
 ** hcps deals
+
 	Print a High Card Distribution Graph. Takes one argument, the
 	Number of Hands to Deal. Default is 1000, which is Too Low,
 	but Quick. Try adding a Zero or Two to get Better Approximations.
 	Note that a Deal actually includes Four Hands.
+
+	If deals is negative, print Pair (26 cards) rather than Hand (13)
+	Distributions. Note that since this chart is Symmetric, only Half
+	of it is printed. For every pair that holds 17 points, there is a
+	pair that holds 23. and so on.
 
 ** dist -drp deals
 
@@ -33,11 +40,12 @@ Python3 under Linux but ought to work on any Python interpreter.
 The outputs have a Cumulative as well as Reverse running SubTotal Columns,
 so Ranges can be more Easily Computed when the -d flag is used.
 
-A thousand hands go quickly. A Million take 
-
+A thousand hands take One Second. A Million take Two Minutes.
+
 * Quick Facts
 
-	+ use "dist" for a normal distribution table
+	+ use "dist"	for a normal distribution table
+	+ use "dist -r"	for a sorted distribution table
 
 	+ use "dist -d" to determine...
 	+ 35% chance of 4 card longest suit
