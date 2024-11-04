@@ -31,7 +31,7 @@ def shuffle(): return sample(range(52),52)
 def dist(hand, updn):
 	hash = [0,0,0,0]
 	for card in hand: hash[card & 3] += 1
-	return	int('%x%x%x%x' % tuple(sorted(hash,reverse=updn)), base=16)
+	return	'%x%x%x%x' % tuple(sorted(hash,reverse=updn))
 
 ####################################################################
 

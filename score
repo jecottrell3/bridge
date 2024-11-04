@@ -1,51 +1,66 @@
 #! /bin/python3
 from __future__ import print_function
+from sys import *
+debug = 0
 
-import sys, os, re
+"""parse scoring string: #s+#vd
 
-"""Parse Scoring String: #S+#VD
+example: 3n+1nr		3 notrump making 4, non-Vulnerable, ReDoubled
+example: 4s-1vu		4 spades, down 1, vulnerable, Undoubled
+example: 2d=6nd		2 diamonds, six tricks. Down Two
+quick:	-1		1 down
+quick:	2hx		2 hearts doubled
 
-Example: 3N+1NR		3 Notrump Making 4, Non-Vulnerable, ReDoubled
-Example: 4S-1VU		4 Spades, Down 1, Vulnerable, Undoubled
-Example: 2D=6ND		2 Diamonds, Six Tricks. Down Two
+NOTE: Numbers greater that Ten are in HEX. After -9 comes -A!
+The first two characters are the contract. The next two can be '+' or '-',
+meaning overtricks or undertricks. Use '=' for 'making' and '@' for
+Absolute Number of Tricks.
 
-The first two characters are the Contract. The next can be + or -, meaning
-Overtricks or Undertricks. Use +0 for making bid Exactly.
+The letters 'd', 'r', and 'v' can be added to specify Doubled,
+Redoubled, and/or Vulnernable. Default is Undoubled Non-Vulnerable.
 
-Note that V and D (or R for Redouble) are Flags; N or U never appear.
+Some Examples:
 
-The Contract may be Omitted when Scoring Undertricks.
+1c	One Club. Same as the next four.
+1c=1	One Club, Making One.
+1c+0	One Club, Zero  Overtricks.
+1c-0	One Club, Zero Undertricks.
+1c@7	One Club, Taking Seven.
+
+1c-1	One Club, One Undertrick
+1c=0	One Club, Making Zero.
+1c@6	One Club, Taking Six.
+-1	Down One. Contract Irrelevant.
+
+1n+6rv	One Notrump, Taking All, Redoubled Vulnerable. 3160 Highest!
+7n=7rv	Grand Slam. Not Quite as Good. Only 2980.
+
+NOTE: V and D (or r for redouble) are flags; N or U never appear.
+
+The contract may be omitted when scoring undertricks.
 """
-
-debug = len(sys.argv) > 1
+#################################################################
 
 def	down(bid, undr, vul, dbl):
+	if 0: print('Down ', bid, undr, vul, dbl)
 
-	out = 'Bid: %s, ' % bid if bid else ''
-	out += 'Down %d, ' % undr
-	out +=  'NV'[vul]
-	out += 'UDR'[dbl]
-	
-	# undoubled tricks are 50,100
+	# undoubled tricks are 50, 100 if vul
 	#   doubled tricks follow two schedules
+
 	if not dbl:	ouch = undr * (100 if vul else 50)
 	elif vul:	ouch = undr * 300 - 100	# 200, 500, 800...
 	elif undr < 3:	ouch = undr * 200 - 100 # 100, 300
 	else:		ouch = undr * 300 - 400 # 500, 800...
 
-	if dbl == 2:		ouch *= 2	# Redouble All Penalties
-	out += ' = %d' % -ouch
-	if debug:	print(out)
+	if dbl == 2:	ouch *= 2	# Redouble All Penalties
 	return -ouch
 
+#################################################################
+
 def	made(bid, over, vul, dbl):
+	if 0: print('Made ', bid, over, vul, dbl)
 
 	# part score, game score, insult
-
-	out  = 'Bid: %s, ' % bid
-	out += 'Over %d, ' % over
-	out +=  'NV'[vul]
-	out += 'UDR'[dbl]
 
 	suit = bid[1]
 	bump = 10 if  suit == 'n' else 0
@@ -55,7 +70,8 @@ def	made(bid, over, vul, dbl):
 	# game score depends on doubling
 	game = (bid * base + bump) * (1 << dbl)
 
-	# add Game Bonus or Part Score
+	# add game bonus or part score
+	if game ==  0:	return 0
 	if game < 100:	game += 50
 	else:		game += 500 if vul else 300
 
@@ -66,62 +82,89 @@ def	made(bid, over, vul, dbl):
 	if dbl:		over *= 50 << (dbl + vul)
 	else:		over *= base
 
-	insult = 50 * dbl		# Making Doubled Contract
+	insult = 50 * dbl		# making Doubled Contract
 	game += over + insult
 
-	# slam bonuses are Additional
+	# slam bonuses are additional
 	if bid == 6:	game +=  750 if vul else  500
 	if bid == 7:	game += 1500 if vul else 1000
 
-	if debug:	print(out, '= %d' % game)
 	return game
 
-"""Parse Scoring String: #S+#VD"""
-"""Parse Scoring String: #S-#VD"""
-"""Parse Scoring String:   -#VD"""
-
-def	num(x):	return int(x, base=14)
+#################################################################
+"""parse scoring string: #s+#vx"""
+"""parse scoring string: #s-#vx"""
+"""parse scoring string:   -#vx"""
+#################################################################
 
 def	score(line):
 
-	"""Parse Context"""
-	line += '.'
+	"""parse context"""
+
+	if line[0] == '-':	line = '0z' + line	# fake bid
+	else:			line += '.'		# padding
+
 	vul = 'v' in line
 	red = 'r' in line
 	dbl = 'x' in line or 'd' in line[2:]
 	if red: dbl = 2
 
-	"""Win or Lose"""
-	skor = 9999
-	bid = line[0:2]
+	"""contract"""
 
-#        1         2         3         4         5         6         7         8
-#2345678901234567890123456789012345678901234567890123456789012345678901234567890
-	if   line[0] == '-':	skor = down(None, num(line[1]), vul, dbl)
-	elif line[2] == '-':	skor = down(bid,  num(line[3]), vul, dbl)
-	elif line[2] == '+':	skor = made(bid,  num(line[3]), vul, dbl)
-	elif line[2] == '.':	skor = made(bid,  0,		vul, dbl)
-	elif line[2] == '=':
-		diff = num(line[3]) - num(line[0])
-		if diff < 0:	skor = down(bid, -diff, vul, dbl)
-		else:		skor = made(bid,  diff, vul, dbl)
-	#lse: print('WTF?')
-	else:			skor = made(bid,  0,            vul, dbl)
-	if debug:	print(line + ": %d" % skor)
-	return skor
+	bid  = line[0:2]
+	need = int(line[0])
+	suit =     line[1]
+	sign =     line[2]
 
-all7 = range(1,8)
+	"""reults"""
 
-def main():
+	if   sign == '-':	xtra = int(line[2:4], base=14)	# undertrix
+	elif sign == '+':	xtra = int(line[2:4])		# overtrix
+	elif sign == '=':	xtra = int(line[3]) - need	# making
+	elif sign == '@':	xtra = int(line[3]) - need - 6	# absolute
+	else:			xtra = 0
+
+	"""win or lose"""
+
+	if xtra < 0:	return down(bid, - xtra, vul, dbl)
+	else:		return made(bid, + xtra, vul, dbl)
+
+#################################################################
+####	Generate the ACBL Scoring Table
+#################################################################
+
+all7 = '1234567'
+
+def dash():	print('-' * 74)
+
+def table():
+	dash()
+	for down in all7 + '89ABCD':
+		for tail in ('', 'x', 'r', 'v', 'xv', 'rv'):
+			if not tail: print('', end='|')
+			arg = '-' + down + tail
+			print(' %s%6d' % (arg, score(arg)), end=' |')
+		print()
+	dash()
 	for bid in all7:
-		arg = '%d%s' % (bid, 'c.')
-		print('%s = %d' % (arg, score(arg)), end='\t')
+		for suit in 'csn':
+			for took in all7:
+				if took < bid: continue
+				for tail in ('', 'x', 'r', 'v', 'xv', 'rv'):
+					if not tail: print('', end='|')
+					arg = bid + suit + took + tail
+					print(' %s%5d' % (arg, score(arg)), end=' |')
+				print()
+			dash()
 
-def old_main():
-	"""Loop Over Input"""
-	line = input()
-	while line:
+#################################################################
+
+args = argv[1:]
+def main():
+	"""args are contracts"""
+	if not args: table(); exit()
+	for line in args:
 		print(line, '= %d' % score(line))
-		line = input()
 
-if __name__ == '__main__':	old_main()
+#################################################################
+if __name__ == '__main__':	main()

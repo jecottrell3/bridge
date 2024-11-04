@@ -2,8 +2,8 @@ https://github.com/jecottrell3/bridge
 
 * Miscellaneous Bridge Utilities
 
-Here you will find Three Programs to Compute the Distribution
-of High Card Points and Suit Distribution. They are written in
+Here you will find Programs to Compute the Distribution of High Card
+Points, and Suit Distribution, and Score a Hand.  They are written in
 Python3 under Linux but ought to work on any Python interpreter.
 
 ** deal deals
@@ -34,6 +34,10 @@ Python3 under Linux but ought to work on any Python interpreter.
 	The last argument is the Number of Deals, defaulting to 1000.
 
 	NOTE: Suit lengths are in Hex; A is 10, B is 11, C is 12, and D is 13.
+
+** score contracts
+	Scores Bridge Hands. Print  the Score for Each Contract.
+	With no arguments, print ACBL Score Table.
 
 * NOTES:
 
@@ -93,5 +97,7 @@ pair-tops.txt	dist -p	  1234567	Pair Distribution by Freduency
 pair-sort.txt	dist -pr  1234567	Pair Distribution by Scarcity
 pair-dist.txt	dist -pd  1234567	Pair Distribution by Long  Suits
 pair-revs.txt	dist -pdr 1234567	Pair Distribution by Short Suits
+
+score.txt	score			ACBL Scoring Table
 
 * END
