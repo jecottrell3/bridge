@@ -80,10 +80,12 @@ A thousand hands take One Second. A Million take Two Minutes.
 
 Three programs are included: hand, hcps, dist.
 A makefile and a README.txt are included.
+My List of Bridge Books is in books.txt
 
 * Data Files.
 
 NAME		COMMAND			DESCRIPTION
+books.txt				My Bridge Books
 deal.txt	deal 4			A Chicago Deal
 hcps-hand.txt	hcps	  1234567	Hand High Card Point Graph
 hcps-pair.txt	hcps	  -1234567	Pair High Card Point Graph
